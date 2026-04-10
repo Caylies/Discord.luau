@@ -29,6 +29,7 @@ const Components = require("@self/components")
 const Webhook = require("@self/webhook")
 
 export type Color = Color.Color
+export type Embed = Components.Embed
 export type Component = Components.Component
 export type SeparatorSpacing = Components.SeparatorSpacing
 export type Separator = Components.Separator

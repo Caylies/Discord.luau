@@ -24,45 +24,18 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-export type Embed = {
-    read Title: string?,
-    read Description: string?,
-    read Url: string?,
-    read Color: any?,
+type Colors = {
+    RESET: string,
+    TYPES: { [string]: string }
 }
 
-export type Component = {
-    read Type: integer,
-    read id: integer?,
-}
-
-export type UnfurledMediaItem = {
-    read url: string,
-}
-
-export type SeparatorSpacing = 
-    | "Small"
-    | "Large"
-
-export type Separator = Component & {
-    read Spacing: SeparatorSpacing?,
-    read Divider: boolean?,
-}
-
-export type TextDisplay = Component & {
-    read Content: string,
-}
-
-export type File = Component & {
-    read Name: string?,
-    read File: UnfurledMediaItem,
-    read Spoiler: boolean?,
-}
-
-export type Container = Component & {
-    read Components: { Component },
-    read AccentColor: any?,
-    read Spoiler: boolean?,
-}
-
-return nil
+return {
+    RESET = "\27[0m",
+    TYPES = {
+        ERROR = "\27[31m",
+        WARNING = "\27[33m",
+        INFO = "\27[32m",
+        CRITICAL = "\27[35m",
+        DEBUG = "\27[90m",
+    }
+} :: Colors

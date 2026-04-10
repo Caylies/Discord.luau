@@ -31,6 +31,7 @@ const Strings = require("./utils/strings")
 
 type Serialized<T> = Types.Serialized<T>
 
+-- TODO: Move this function to `discord/core/requests`.
 function Serializer.Serialize<T>(Data: T & {}): T
     local Serialized: { [any]: any } = {}
 

@@ -26,6 +26,7 @@ DEALINGS IN THE SOFTWARE.
 
 const Types = require("./types/components")
 
+export type Embed = Types.Embed
 export type Component = Types.Component
 export type SeparatorSpacing = Types.SeparatorSpacing
 export type Separator = Types.Separator
@@ -34,8 +35,9 @@ export type File = Types.File
 export type Container = Types.Container
 
 return {
-    Container = require("@self/Elements/Container"),
-    TextDisplay = require("@self/Elements/TextDisplay"),
-    Separator = require("@self/Elements/Separator"),
+    Embed = require("@self/legacy/Embed"),
+    Container = require("@self/elements/Container"),
+    TextDisplay = require("@self/elements/TextDisplay"),
+    Separator = require("@self/elements/Separator"),
     File = require("@self/elements/File")
 }

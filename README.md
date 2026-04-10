@@ -7,4 +7,4 @@ Check the `examples` folder to see examples of how the Discord.luau framework wo
 ## Features
 
 - **Webhooks** - Connecting to Discord webhooks via a URL, sending messages through them, and deleting them.
-- **Components** - Building Discord message components and using them in messages.
+- **Components** - Building Discord message components with legacy embeds or modern components via components v2.

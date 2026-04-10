@@ -41,7 +41,7 @@ const Dictionaries = require("../core/utils/dictionaries")
 const MessageFlags = require("../core/flags/message")
 const InteractionTypes = require("../types/interactions")
 
-const Logger = Logging.GetLogger("Discord.webhook.webhook")
+const Logger = Logging.GetLogger("Discord.Webhook")
 
 type WebhookExecutionInterface = InteractionTypes.WebhookExecutionInterface
 
@@ -56,6 +56,7 @@ export type Webhook = setmetatable<{
     @return Webhook -- The connected webhook.
 ]]
 function Webhook.FromURL(WebhookUrl: string): Webhook
+    Logger:Debug(`Connected to webhook with '{WebhookUrl}'`)
     return setmetatable({WebhookUrl = WebhookUrl}, Webhook)
 end
 
@@ -70,13 +71,21 @@ end
 ]]
 function Webhook.SendAsync(self: Webhook, Parameters: WebhookExecutionInterface): ()
     if Dictionaries.Length(Parameters) == 0i then
-        Logger:Critical("InvalidData: Attempt to pass through an empty table")
+        Logger:Critical("ImproperBody: Attempt to pass through an empty table")
     end
 
-    if Parameters.Components and Parameters.Content then
-        Logger:Critical(
-            "InvalidData: The 'content' parameter can't be used when using the 'IS_COMPONENTS_V2' message flag"
-        )       
+    if Parameters.Components then
+        const InvalidDataMessage = (
+            "ImproperBody: The '%s' parameter can't be used when using the 'IS_COMPONENTS_V2' message flag"
+        )
+
+        if Parameters.Content then
+            Logger:Critical(InvalidDataMessage.format("content"))
+        end
+
+        if Parameters.Embeds then
+            Logger:Critical(InvalidDataMessage.format("embeds"))
+        end
     end
 
     local WebhookUrl = self.WebhookUrl
@@ -89,6 +98,8 @@ function Webhook.SendAsync(self: Webhook, Parameters: WebhookExecutionInterface)
 
     const Body = json.serialize(RawBody, true)
 
+    Logger:Debug(`Sending request via 'POST' through webhook with body: {Body}`)
+
     const Response = net.request(WebhookUrl, {
         method = "POST",
         body = Body,
@@ -98,8 +109,10 @@ function Webhook.SendAsync(self: Webhook, Parameters: WebhookExecutionInterface)
     })
 
     if not Response.ok then
-        Logger:Critical(`HTTPError: Discord Request Status {Response.status}`)
+        Logger:Critical(`HTTPError: Discord Request Status Code {Response.status}`)
     end
+
+    Logger:Debug(`Request successful (Status Code {Response.status})`)
 end
 
 --[[
@@ -120,22 +133,27 @@ function Webhook.DeleteAsync(self: Webhook, Reason: string?): ()
         headers["X-Audit-Log-Reason"] = Reason
     end
 
+    Logger:Debug("Sending request via 'DELETE' through webhook")
+
     const Response = net.request(self.WebhookUrl, {
         method = "DELETE",
         headers = headers
     })
 
     if not Response.ok then
-        Logger:Critical(`HTTPError: Discord Request Status {Response.status}`)
+        Logger:Critical(`HTTPError: Discord Request Status Code {Response.status}`)
     end
 
+    Logger:Debug(`Request successful (Status Code {Response.status})`)
     self:Disconnect()
 end
 
 --[[
-    Disconnects the current webhook instance.
+    Destroys the current webhook class instance.
 ]]
 function Webhook.Disconnect(self: Webhook): ()
+    Logger:Debug("Clearing active webhook class instance")
+
     table.clear(self)
     setmetatable(self, nil)
 end
