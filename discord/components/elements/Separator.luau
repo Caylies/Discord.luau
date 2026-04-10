@@ -24,8 +24,41 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const Webhook = require("@self/Webhook")
+const Separator = {
+    IS_COMPONENT = true,
+}
+Separator.__index = Separator
 
-export type Webhook = Webhook.Webhook
+const ComponentTypes = require("../../types/components")
 
-return Webhook
+type Spacing = ComponentTypes.SeparatorSpacing
+
+export type Separator = setmetatable<{
+    Spacing: Spacing?,
+    Divider: boolean?,
+}, typeof(Separator)>
+
+--[[
+    Creates a new TextDisplay component.
+
+    @param Content string -- The content of the TextDisplay component.
+    @return TextDisplay -- The created TextDisplay component.
+]]
+function Separator.new(Spacing: Spacing?, Divider: boolean?): Separator
+    const self = setmetatable({}, Separator) :: Separator
+
+    self.Spacing = Spacing
+    self.Divider = Divider
+
+    return self
+end
+
+function Separator.__serialize(self: Separator)
+    return {
+        type = 14i,
+        divider = self.Divider,
+        spacing = if not self.Spacing then nil else if self.Spacing == "Small" then 1 else 2
+    }
+end
+
+return Separator.new

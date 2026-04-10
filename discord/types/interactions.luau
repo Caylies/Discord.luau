@@ -31,6 +31,7 @@ export type MessageSendInterface = {
 export type WebhookExecutionInterface = MessageSendInterface & {
     read Username: string?,
     read AvatarUrl: string?,
+    read Components: { any }?,
 }
 
 return nil

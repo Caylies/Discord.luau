@@ -24,6 +24,21 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
+const Color = require("@self/color")
+const Components = require("@self/components")
+const Webhook = require("@self/webhook")
+
+export type Color = Color.Color
+export type Component = Components.Component
+export type SeparatorSpacing = Components.SeparatorSpacing
+export type Separator = Components.Separator
+export type TextDisplay = Components.TextDisplay
+export type File = Components.File
+export type Container = Components.Container
+export type Webhook = Webhook.Webhook
+
 return {
-    Webhook = require("@self/webhook"), 
+    Color = Color,
+    Components = Components,
+    Webhook = Webhook,
 }

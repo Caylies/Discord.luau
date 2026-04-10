@@ -24,8 +24,36 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const Webhook = require("@self/Webhook")
+const UnfurledMediaItem = {}
+UnfurledMediaItem.__index = UnfurledMediaItem
 
-export type Webhook = Webhook.Webhook
+const stringext = require("@std/stringext")
 
-return Webhook
+export type UnfurledMediaItem = setmetatable<{
+    Url: string,
+}, typeof(UnfurledMediaItem)>
+
+--[[
+    Creates a new UnfurledMediaItem.
+
+    @param Url string -- The piece of media you want to store via URL.
+    @return UnfurledMediaItem -- A new UnfurledMediaItem instance.
+]]
+function UnfurledMediaItem.new(Url: string): UnfurledMediaItem
+    if not stringext.hasPrefix(Url, "attachment://") then
+        error("Invalid attachment url passed", 3)
+    end
+
+    const self = setmetatable({}, UnfurledMediaItem) :: UnfurledMediaItem
+
+    self.Url = Url
+
+    return self
+end
+
+function UnfurledMediaItem.__serialize(self: UnfurledMediaItem)
+    return { url = self.Url }
+end
+
+
+return UnfurledMediaItem

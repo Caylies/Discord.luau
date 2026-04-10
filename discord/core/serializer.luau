@@ -26,21 +26,40 @@ DEALINGS IN THE SOFTWARE.
 
 const Serializer = {}
 
+const Types = require("../types/object")
 const Strings = require("./utils/strings")
 
+type Serialized<T> = Types.Serialized<T>
+
 function Serializer.Serialize<T>(Data: T & {}): T
-    local Serialized = {}
+    local Serialized: { [any]: any } = {}
 
     for Key, Value in Data :: any do
+        const IsNumber = typeof(Key) == "number"
+
         Key = Strings.PascalToSnake(tostring(Key))
 
         if typeof(Value) == "table" then
+            local NewValue = nil
+
             if Value["__serialize"] then
-                Serialized[Key] = (Value.__serialize :: any)()
+                Value = Value :: Serialized<typeof(Value)>
+                NewValue = Serializer.Serialize(Value:__serialize())
+            else
+                NewValue = Serializer.Serialize(Value)
+            end
+
+            if IsNumber then
+                table.insert(Serialized, NewValue)
                 continue
             end
 
-            Serialized[Key] = Serializer.Serialize(Value)
+            Serialized[Key] = NewValue
+            continue
+        end
+        
+        if typeof(Value) == "integer" then -- The Lute JSON library doesn't support integers yet
+            Serialized[Key] = integer.tonumber(Value)
             continue
         end
 

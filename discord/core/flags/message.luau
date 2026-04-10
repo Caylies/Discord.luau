@@ -24,8 +24,6 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const Webhook = require("@self/Webhook")
-
-export type Webhook = Webhook.Webhook
-
-return Webhook
+return {
+    IS_COMPONENTS_V2 = 32768,
+}

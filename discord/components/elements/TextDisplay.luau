@@ -24,8 +24,34 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const Webhook = require("@self/Webhook")
+const TextDisplay = {
+    IS_COMPONENT = true,
+}
+TextDisplay.__index = TextDisplay
 
-export type Webhook = Webhook.Webhook
+export type TextDisplay = setmetatable<{
+    Content: string,
+}, typeof(TextDisplay)>
 
-return Webhook
+--[[
+    Creates a new TextDisplay component.
+
+    @param Content string -- The content of the TextDisplay component.
+    @return TextDisplay -- The created TextDisplay component.
+]]
+function TextDisplay.new(Content: string): TextDisplay
+    const self = setmetatable({}, TextDisplay) :: TextDisplay
+
+    self.Content = Content
+
+    return self
+end
+
+function TextDisplay.__serialize(self: TextDisplay)
+    return {
+        type = 10i,
+        content = self.Content,
+    }
+end
+
+return TextDisplay.new

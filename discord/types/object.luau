@@ -24,8 +24,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const Webhook = require("@self/Webhook")
+export type Serialized<T> = T & {
+    __serialize: (self: T) -> any
+}
 
-export type Webhook = Webhook.Webhook
-
-return Webhook
+return nil

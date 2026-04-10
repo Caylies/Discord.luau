@@ -38,24 +38,25 @@ const net = require("@lute/net/client")
 const Logging = require("../core/logging")
 const Serializer = require("../core/serializer")
 const Dictionaries = require("../core/utils/dictionaries")
+const MessageFlags = require("../core/flags/message")
 const InteractionTypes = require("../types/interactions")
 
-const Logger = Logging.GetLogger("Webhook")
+const Logger = Logging.GetLogger("Discord.webhook.webhook")
 
 type WebhookExecutionInterface = InteractionTypes.WebhookExecutionInterface
 
 export type Webhook = setmetatable<{
-    read WebhookURL: string
+    read WebhookUrl: string
 }, typeof(Webhook)>
 
 --[[
     Connects to a Discord webhook via its URL.
 
-    @param WebhookURL string -- The webhook's URL.
+    @param WebhookUrl string -- The webhook's URL.
     @return Webhook -- The connected webhook.
 ]]
-function Webhook.Connect(WebhookURL: string): Webhook
-    return setmetatable({WebhookURL = WebhookURL}, Webhook)
+function Webhook.FromURL(WebhookUrl: string): Webhook
+    return setmetatable({WebhookUrl = WebhookUrl}, Webhook)
 end
 
 --[[
@@ -72,9 +73,23 @@ function Webhook.SendAsync(self: Webhook, Parameters: WebhookExecutionInterface)
         Logger:Critical("InvalidData: Attempt to pass through an empty table")
     end
 
-    const Body = json.serialize(Serializer.Serialize(Parameters), true)
+    if Parameters.Components and Parameters.Content then
+        Logger:Critical(
+            "InvalidData: The 'content' parameter can't be used when using the 'IS_COMPONENTS_V2' message flag"
+        )       
+    end
 
-    const response = net.request(self.WebhookURL, {
+    local WebhookUrl = self.WebhookUrl
+    local RawBody = Serializer.Serialize(Parameters) :: { [any]: any }
+
+    if Parameters.Components then
+        WebhookUrl ..= "?with_components=true"
+        RawBody["flags"] = MessageFlags.IS_COMPONENTS_V2
+    end
+
+    const Body = json.serialize(RawBody, true)
+
+    const Response = net.request(WebhookUrl, {
         method = "POST",
         body = Body,
         headers = {
@@ -82,15 +97,21 @@ function Webhook.SendAsync(self: Webhook, Parameters: WebhookExecutionInterface)
         }
     })
 
-    print(response.status, response.ok)
+    if not Response.ok then
+        Logger:Critical(`HTTPError: Discord Request Status {Response.status}`)
+    end
 end
 
 --[[
     Deletes the current webhook.
 
+    @yields
+    @method DeleteAsync
+    @within Webhook
+
     @param Reason string? -- The reason for deleting the webhook.
 ]]
-function Webhook.Delete(self: Webhook, Reason: string?): ()
+function Webhook.DeleteAsync(self: Webhook, Reason: string?): ()
     local headers = {
         ["Content-Type"] = "application/json"
     }
@@ -99,18 +120,20 @@ function Webhook.Delete(self: Webhook, Reason: string?): ()
         headers["X-Audit-Log-Reason"] = Reason
     end
 
-    const response = net.request(self.WebhookURL, {
+    const Response = net.request(self.WebhookUrl, {
         method = "DELETE",
         headers = headers
     })
 
-    print(response.status, response.ok)
+    if not Response.ok then
+        Logger:Critical(`HTTPError: Discord Request Status {Response.status}`)
+    end
 
     self:Disconnect()
 end
 
 --[[
-    Disconnect the current webhook instance.
+    Disconnects the current webhook instance.
 ]]
 function Webhook.Disconnect(self: Webhook): ()
     table.clear(self)

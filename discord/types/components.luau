@@ -24,8 +24,36 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const Webhook = require("@self/Webhook")
+export type Component = {
+    read Type: integer,
+    read id: integer?,
+}
 
-export type Webhook = Webhook.Webhook
+export type UnfurledMediaItem = {
+    read url: string,
+}
 
-return Webhook
+export type SeparatorSpacing = "Small" | "Large"
+
+export type Separator = Component & {
+    read Spacing: SeparatorSpacing,
+    read Divider: boolean,
+}
+
+export type TextDisplay = Component & {
+    read Content: string,
+}
+
+export type File = Component & {
+    read Name: string,
+    read File: UnfurledMediaItem,
+    read Spoiler: boolean,
+}
+
+export type Container = Component & {
+    read Components: { Component },
+    read AccentColor: any,
+    read Spoiler: boolean,
+}
+
+return nil

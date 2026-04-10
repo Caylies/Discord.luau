@@ -7,7 +7,7 @@
 ]]
 
 const Discord = require("../../discord")
-const Webhook = Discord.Webhook.Connect("ENTER_WEBHOOK_URL_HERE")
+const Webhook = Discord.Webhook.FromURL("ENTER_WEBHOOK_URL_HERE")
 
 Webhook:SendAsync {
     Username = "Example Webhook",

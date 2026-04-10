@@ -24,8 +24,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const Webhook = require("@self/Webhook")
+const Color = require("@self/Color")
 
-export type Webhook = Webhook.Webhook
+export type Color = Color.Color
 
-return Webhook
+return Color
