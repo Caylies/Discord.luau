@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -24,8 +22,13 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
+--[[
+    Separator class for Discord message components.
+
+    @class Separator
+]]
 const Separator = {
-    IS_COMPONENT = true,
+    _IS_COMPONENT = true,
 }
 Separator.__index = Separator
 

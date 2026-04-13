@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -24,8 +22,34 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-export type Serialized<T> = T & {
-    __serialize: (self: T) -> any
-}
+--[[
+    If `Condition` is true, the second type passed through will be returned, otherwise the first gets returned.
+
+    @param Case1 type -- The type that will be returned if `Condition` is false.
+    @param Case2 type -- The type that will be returned if `Condition` is true.
+    @param Condition type -- A true or false singleton that will determine which type is chosen.
+    @return type -- The returned type depending on the value of `Condition`.
+]]
+export type function Select(Case1: type, Case2: type, Condition: type): type
+    if not Condition then
+        error("Condition is missing or nil", 2)
+    end
+
+    if not Condition:is("singleton") then
+        error(`Expected 'singleton', got '{Condition.tag}'`, 2)
+    end
+
+    const ConditionValue = Condition:value()
+
+    if typeof(ConditionValue) ~= "boolean" then
+        error(`Expected 'boolean', got '{typeof(ConditionValue)}'`, 2)
+    end
+
+    if not ConditionValue then
+        return Case1
+    end
+
+    return Case2
+end
 
 return nil

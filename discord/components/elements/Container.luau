@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -24,18 +22,23 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
+--[[
+    Container class for Discord message components.
+
+    @class Container
+]]
 const Container = {
-    IS_COMPONENT = true,
+    _IS_COMPONENT = true,
 }
 Container.__index = Container
 
 const Color = require("../../color")
-const ComponentTypes = require("../../types/components")
-const ObjectTypes = require("../../types/object")
+const Types = require("../../types")
 
-type Component = ComponentTypes.Component
+type Component = Types.Component
 type Color = Color.Color
-type Serialized<T> = ObjectTypes.Serialized<T>
+type Serialize<T> = Types.Serialize<T>
+type Serializable<T = { any }> = Types.Serializable<T>
 
 export type Container = setmetatable<{
     AccentColor: Color?,
@@ -58,7 +61,7 @@ function Container.new(Parameters: { [any]: any }): Container
     self.Spoiler = Parameters.Spoiler
 
     for Key, Component in Parameters do
-        if typeof(Component) ~= "table" or not Component["IS_COMPONENT"] then
+        if typeof(Component) ~= "table" or not Component["_IS_COMPONENT"] then
             continue
         end
 
@@ -68,12 +71,30 @@ function Container.new(Parameters: { [any]: any }): Container
     return self
 end
 
+--[[
+    Adds a component to the container.
+
+    @method Add
+    @within Container
+
+    @param Component any -- The component you want to add.
+    @param Position integer? -- The position where the component will be added.
+]]
+function Container.Add(self: Container, Component: any, Position: integer?): ()
+    if Position then
+        table.insert(self.Components, integer.tonumber(Position), Component)
+        return
+    end
+
+    table.insert(self.Components, Component)
+end
+
 function Container.__serialize(self: Container)
-    local SerializedComponents: { Serialized<Component> } = {}
+    local SerializedComponents: { Serialize<Component> } = {}
 
     for _, Component in self.Components do
-        Component = Component :: Serialized<typeof(Component)>
-        table.insert(SerializedComponents, Component:__serialize())
+        const TypedComponent = Component :: Serializable<Component>
+        table.insert(SerializedComponents, TypedComponent:__serialize())
     end
 
     const SerializedColor = if self.AccentColor then self.AccentColor:__serialize() else nil

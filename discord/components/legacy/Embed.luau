@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -24,6 +22,11 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
+--[[
+    Embed class for legacy Discord message components.
+
+    @class Embed
+]]
 const Embed = {}
 Embed.__index = Embed
 
@@ -31,18 +34,40 @@ const Color = require("../../color")
 
 type Color = Color.Color
 
+type EmbedAuthor = {
+    name: string,
+    url: string?,
+    icon_url: string?,
+}
+
 type EmbedField = {
     name: string,
     value: string,
-    inline: boolean?
+    inline: boolean?,
 }
 
 type Parameters = {
     Title: string?,
     Description: string?,
     Color: Color?,
-    Url: string?
+    Url: string?,
 }
+
+type AuthorParameters = {
+    Name: string,
+    Url: string?,
+    IconUrl: string?,
+}
+
+type FieldParameters = {
+    Name: string,
+    Value: string,
+    Inline: boolean?,
+}
+
+type function Negate(Type: type): type
+    return types.negationof(Type)
+end
 
 export type Embed = setmetatable<{
     Title: string?,
@@ -50,6 +75,7 @@ export type Embed = setmetatable<{
     Url: string?,
     Color: Color?,
     Fields: { EmbedField }?,
+    Author: EmbedAuthor?,
 }, typeof(Embed)>
 
 --[[
@@ -75,12 +101,43 @@ end
 --[[
     Adds a new field to an embed.
 
+    @method AddField
+    @within Embed
+
     @param Name string -- The field's name.
     @param Value string -- The field's value.
     @param Inline boolean? -- Whether or not the field will be inlined.
 ]]
-function Embed.AddField(self: Embed, Name: string, Value: string, Inline: boolean?)
-    error("Not implemented yet", 2)
+function Embed.AddField(self: Embed, Parameters: FieldParameters)
+    if not self.Fields then
+        self.Fields = {}
+    end
+
+    const Field: EmbedField = {
+        name = Parameters.Name,
+        value = Parameters.Value,
+        inline = Parameters.Inline,
+    }
+
+    table.insert(self.Fields :: typeof(self.Fields) & Negate<nil>, Field)
+end
+
+--[[
+    Sets the embed's author.
+
+    @method SetAuthor
+    @within Embed
+
+    @param Name string -- The author's name.
+    @param Url string? -- The author's URL.
+    @param IconUrl string? -- The author's icon URL.
+]]
+function Embed.SetAuthor(self: Embed, Parameters: AuthorParameters)
+    self.Author = {
+        name = Parameters.Name,
+        url = Parameters.Url,
+        icon_url = Parameters.IconUrl
+    }
 end
 
 function Embed.__serialize(self: Embed)
@@ -93,8 +150,10 @@ function Embed.__serialize(self: Embed)
     return {
         title = self.Title,
         description = self.Description,
-        Color = SerializedColor,
-        Url = self.Url,
+        color = SerializedColor,
+        url = self.Url,
+        fields = self.Fields,
+        author = self.Author,
     }
 end
 

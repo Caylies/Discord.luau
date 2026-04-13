@@ -1,13 +1,11 @@
---!strict
-
 --[[
-    Example: sending-to-a-webhook.
+    Example: webhooks/sending.
 
     Connects to a Discord webhook and sends a message.
 ]]
 
 const Discord = require("../../discord")
-const Webhook = Discord.Webhook.FromURL("ENTER_WEBHOOK_URL_HERE")
+const Webhook = Discord.Webhook.FromUrlAsync("ENTER_WEBHOOK_URL_HERE")
 
 Webhook:SendAsync {
     Username = "Example Webhook",

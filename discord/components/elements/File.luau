@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -24,8 +22,13 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
+--[[
+    File class for Discord message components.
+
+    @class File
+]]
 const File = {
-    IS_COMPONENT = true,
+    _IS_COMPONENT = true,
 }
 File.__index = File
 
@@ -52,6 +55,9 @@ export type File = setmetatable<{
     @return File -- The created File component.
 ]]
 function File.new(Parameters: Parameters): File
+    error("Not implemented yet", 2)
+
+    --[[
     const self = setmetatable({}, File) :: File
 
     self.File = UnfurledMediaItem.new(Parameters.Url)
@@ -59,6 +65,7 @@ function File.new(Parameters: Parameters): File
     self.Spoiler = Parameters.Spoiler
 
     return self
+    ]]
 end
 
 function File.__serialize(self: File)

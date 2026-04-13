@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -54,6 +52,5 @@ end
 function UnfurledMediaItem.__serialize(self: UnfurledMediaItem)
     return { url = self.Url }
 end
-
 
 return UnfurledMediaItem

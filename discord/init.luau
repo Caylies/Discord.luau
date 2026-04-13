@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -34,7 +32,6 @@ export type Component = Components.Component
 export type SeparatorSpacing = Components.SeparatorSpacing
 export type Separator = Components.Separator
 export type TextDisplay = Components.TextDisplay
-export type File = Components.File
 export type Container = Components.Container
 export type Webhook = Webhook.Webhook
 

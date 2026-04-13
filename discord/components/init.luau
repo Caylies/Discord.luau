@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 

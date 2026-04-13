@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -36,28 +34,73 @@ const json = require("@std/json")
 const net = require("@lute/net/client")
 
 const Logging = require("../core/logging")
-const Serializer = require("../core/serializer")
+const Requests = require("../core/requests")
 const Dictionaries = require("../core/utils/dictionaries")
 const MessageFlags = require("../core/flags/message")
-const InteractionTypes = require("../types/interactions")
+const Url = require("../core/Url")
+const Types = require("../types")
 
 const Logger = Logging.GetLogger("Discord.Webhook")
 
-type WebhookExecutionInterface = InteractionTypes.WebhookExecutionInterface
+type WebhookExecutionInterface = Types.WebhookExecutionInterface
+type WebhookBody = Types.WebhookBody
+type WebhookURL = Types.WebhookURL
 
 export type Webhook = setmetatable<{
-    read WebhookUrl: string
+    read ApplicationID: integer?,
+    read Avatar: string?,
+    read ChannelID: integer,
+    read GuildID: integer,
+    read ID: integer,
+    read Name: string,
+    read Token: string,
+    read Url: string
 }, typeof(Webhook)>
+
+function ProperNil<T>(Field: T): T | nil
+    return if Field ~= json.null then Field else nil
+end
 
 --[[
     Connects to a Discord webhook via its URL.
 
+    @yields
+
     @param WebhookUrl string -- The webhook's URL.
     @return Webhook -- The connected webhook.
 ]]
-function Webhook.FromURL(WebhookUrl: string): Webhook
-    Logger:Debug(`Connected to webhook with '{WebhookUrl}'`)
-    return setmetatable({WebhookUrl = WebhookUrl}, Webhook)
+function Webhook.FromUrlAsync(WebhookUrl: string): Webhook
+    Logger:Debug(`Sending request via 'GET' to webhook with URL: '{WebhookUrl}'`)
+
+    const Response = net.request(WebhookUrl, {
+        method = "GET",
+        headers = {
+            ["Content-Type"] = "application/json"
+        }
+    })
+
+    if not Response.ok then
+        Logger:Critical(`HTTPError: Discord Request Status Code {Response.status}`)
+    end
+
+    Logger:Debug(`Request successful (Status Code {Response.status})`)
+
+    const Body = json.deserialize(Response.body) :: WebhookBody
+    const ApplicationID = ProperNil(Body.application_id)
+    const Avatar = ProperNil(Body.avatar)
+
+    Logger:Debug(`Constructing new Webhook class with: {json.serialize(Body :: any, true)}`)
+
+    return setmetatable({
+        ApplicationID = if ApplicationID then integer.create(ApplicationID) else nil,
+        Avatar = if Avatar then `https://cdn.discordapp.com/avatars/{Body.id}/{Avatar}.png` else nil,
+        ChannelID = integer.create(Body.channel_id),
+        GuildID = integer.create(Body.guild_id),
+        ID = integer.create(Body.id),
+        Name = Body.name,
+        Token = Body.token,
+        Url = Body.url,
+    }, Webhook) :: Webhook
 end
 
 --[[
@@ -75,32 +118,34 @@ function Webhook.SendAsync(self: Webhook, Parameters: WebhookExecutionInterface)
     end
 
     if Parameters.Components then
-        const InvalidDataMessage = (
+        const ImproperBodyMessage = (
             "ImproperBody: The '%s' parameter can't be used when using the 'IS_COMPONENTS_V2' message flag"
         )
 
         if Parameters.Content then
-            Logger:Critical(InvalidDataMessage.format("content"))
+            Logger:Critical(ImproperBodyMessage.format("content"))
         end
 
         if Parameters.Embeds then
-            Logger:Critical(InvalidDataMessage.format("embeds"))
+            Logger:Critical(ImproperBodyMessage.format("embeds"))
         end
     end
 
-    local WebhookUrl = self.WebhookUrl
-    local RawBody = Serializer.Serialize(Parameters) :: { [any]: any }
+    local WebhookUrl = Url.new<<WebhookURL>>(self.Url)
+    local RawBody = Requests.Serialize(false, Parameters)
 
     if Parameters.Components then
-        WebhookUrl ..= "?with_components=true"
+        WebhookUrl:AddQuery("with_components", true)
+
+        RawBody = RawBody :: typeof(RawBody) & { flags: number }
         RawBody["flags"] = MessageFlags.IS_COMPONENTS_V2
     end
 
-    const Body = json.serialize(RawBody, true)
+    const Body = json.serialize(RawBody :: any, true)
 
     Logger:Debug(`Sending request via 'POST' through webhook with body: {Body}`)
 
-    const Response = net.request(WebhookUrl, {
+    const Response = net.request(WebhookUrl:Get(), {
         method = "POST",
         body = Body,
         headers = {
@@ -135,7 +180,7 @@ function Webhook.DeleteAsync(self: Webhook, Reason: string?): ()
 
     Logger:Debug("Sending request via 'DELETE' through webhook")
 
-    const Response = net.request(self.WebhookUrl, {
+    const Response = net.request(self.Url, {
         method = "DELETE",
         headers = headers
     })
@@ -152,7 +197,7 @@ end
     Destroys the current webhook class instance.
 ]]
 function Webhook.Disconnect(self: Webhook): ()
-    Logger:Debug("Clearing active webhook class instance")
+    Logger:Debug("Clearing active webhook instance")
 
     table.clear(self)
     setmetatable(self, nil)

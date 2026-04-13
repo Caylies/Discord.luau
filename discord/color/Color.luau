@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -42,7 +40,7 @@ end
 
 const DEFAULT_COLORS = {
     Default = Wrap(0i),
-    Blue = Wrap(15548997i),
+    Blue = Wrap(3447003i),
     Red = Wrap(15548997i),
     Green = Wrap(5763719i),
     Orange = Wrap(15105570i),
@@ -71,6 +69,15 @@ export type Color = setmetatable<{
 ]]
 function Color.new(R: number, G: number, B: number): Color
 	return setmetatable({ R = R, G = G, B = B }, Color)
+end
+
+--[[
+    Returns a Color with random red, green, and blue values.
+
+    @return Color -- The new color.
+]]
+function Color.Random(): Color
+	return Color.FromRGB(math.random(0, 255), math.random(0, 255), math.random(0, 255))
 end
 
 --[[
