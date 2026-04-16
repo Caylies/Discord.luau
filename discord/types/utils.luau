@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -24,30 +22,34 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const Serializer = {}
+--[[
+    If `Condition` is true, the second type passed through will be returned, otherwise the first gets returned.
 
-const Strings = require("./utils/strings")
-
-function Serializer.Serialize<T>(Data: T & {}): T
-    local Serialized = {}
-
-    for Key, Value in Data :: any do
-        Key = Strings.PascalToSnake(tostring(Key))
-
-        if typeof(Value) == "table" then
-            if Value["__serialize"] then
-                Serialized[Key] = (Value.__serialize :: any)()
-                continue
-            end
-
-            Serialized[Key] = Serializer.Serialize(Value)
-            continue
-        end
-
-        Serialized[Key] = Value
+    @param Case1 type -- The type that will be returned if `Condition` is false.
+    @param Case2 type -- The type that will be returned if `Condition` is true.
+    @param Condition type -- A true or false singleton that will determine which type is chosen.
+    @return type -- The returned type depending on the value of `Condition`.
+]]
+export type function Select(Case1: type, Case2: type, Condition: type): type
+    if not Condition then
+        error("Condition is missing or nil", 2)
     end
 
-    return Serialized
+    if not Condition:is("singleton") then
+        error(`Expected 'singleton', got '{Condition.tag}'`, 2)
+    end
+
+    const ConditionValue = Condition:value()
+
+    if typeof(ConditionValue) ~= "boolean" then
+        error(`Expected 'boolean', got '{typeof(ConditionValue)}'`, 2)
+    end
+
+    if not ConditionValue then
+        return Case1
+    end
+
+    return Case2
 end
 
-return Serializer
+return nil

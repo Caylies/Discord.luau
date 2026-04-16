@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -27,17 +25,12 @@ DEALINGS IN THE SOFTWARE.
 const Logger = {}
 Logger.__index = Logger
 
-const TYPE_COLORS: { [string]: string } = {
-	ERROR = "\27[31m",
-	WARNING = "\27[33m",
-	INFO = "\27[32m",
-	CRITICAL = "\27[35m",
-}
-
-const RESET_COLOR: string = "\27[0m"
+const ENV = require("../../env")
+const Colors = require("./Colors")
 
 export type Logger = setmetatable<{
 	read Name: string,
+    Verbose: boolean,
 }, typeof(Logger)>
 
 --[[
@@ -47,21 +40,21 @@ export type Logger = setmetatable<{
     @return Logger -- A new logger with the specified name.
 ]]
 function Logger.new(Name: string): Logger
-	return setmetatable({ Name = Name }, Logger)
+	return setmetatable({ Name = Name, Verbose = ENV.VERBOSE }, Logger)
 end
 
 --[[
     Formats a log message with colors and formatting.
 
     @param Message string -- The message to format.
-    @param Type keyof<typeof(TYPE_COLORS)> -- The type of the log message.
+    @param Type keyof<typeof(Colors.TYPE)> -- The type of the log message.
     @return string -- The formatted log message.
 ]]
-function Logger._FormatMessage(self: Logger, Message: string, Type: keyof<typeof(TYPE_COLORS)>): string
+function Logger._FormatMessage(self: Logger, Message: string, Type: keyof<typeof(Colors.TYPES)>): string
 	const Timestamp: string = os.date("%Y-%m-%d %H:%M:%S")
-	const Color: string = TYPE_COLORS[Type] or RESET_COLOR
+	const Color: string = Colors.TYPES[Type] or Colors.RESET
 
-	return `\27[90m[{Timestamp}]\27[0m \27[36m[{self.Name}]\27[0m {Color}{Type}{RESET_COLOR}: {Message}`
+	return `\27[90m[{Timestamp}]\27[0m \27[36m[{self.Name}]\27[0m {Color}{Type}{Colors.RESET}: {Message}`
 end
 
 --[[
@@ -98,6 +91,19 @@ end
 ]]
 function Logger.Critical(self: Logger, Message: string): never
 	error(self:_FormatMessage(Message, "CRITICAL"), 0)
+end
+
+--[[
+    Logs a debug message if `Verbose` is enabled.
+
+    @param Message string -- The message to log.
+]]
+function Logger.Debug(self: Logger, Message: string): ()
+    if not self.Verbose then
+        return
+    end
+
+	print(self:_FormatMessage(Message, "DEBUG"))
 end
 
 return Logger

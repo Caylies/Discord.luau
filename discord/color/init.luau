@@ -22,35 +22,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const ComponentTypes = require("./components")
+const Color = require("@self/Color")
 
-type Embed = ComponentTypes.Embed
+export type Color = Color.Color
 
-export type MessageSendInterface = {
-    read Content: string?,
-} 
-
-export type WebhookExecutionInterface = MessageSendInterface & {
-    read Username: string?,
-    read AvatarUrl: string?,
-    read Components: { any }?,
-    read Embeds: { Embed }?,
-}
-
-export type WebhookBody = {
-    read application_id: number?,
-    read avatar: string?,
-    read channel_id: number,
-    read guild_id: number,
-    read id: number,
-    read name: string,
-    read type: number,
-    read token: string,
-    read url: string,
-}
-
-export type WebhookURL = {
-    write with_components: boolean,
-}
-
-return nil
+return Color

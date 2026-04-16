@@ -22,35 +22,46 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const ComponentTypes = require("./components")
+--[[
+    Separator class for Discord message components.
 
-type Embed = ComponentTypes.Embed
-
-export type MessageSendInterface = {
-    read Content: string?,
-} 
-
-export type WebhookExecutionInterface = MessageSendInterface & {
-    read Username: string?,
-    read AvatarUrl: string?,
-    read Components: { any }?,
-    read Embeds: { Embed }?,
+    @class Separator
+]]
+const Separator = {
+    _IS_COMPONENT = true,
 }
+Separator.__index = Separator
 
-export type WebhookBody = {
-    read application_id: number?,
-    read avatar: string?,
-    read channel_id: number,
-    read guild_id: number,
-    read id: number,
-    read name: string,
-    read type: number,
-    read token: string,
-    read url: string,
-}
+const ComponentTypes = require("../../types/components")
 
-export type WebhookURL = {
-    write with_components: boolean,
-}
+type Spacing = ComponentTypes.SeparatorSpacing
 
-return nil
+export type Separator = setmetatable<{
+    Spacing: Spacing?,
+    Divider: boolean?,
+}, typeof(Separator)>
+
+--[[
+    Creates a new TextDisplay component.
+
+    @param Content string -- The content of the TextDisplay component.
+    @return TextDisplay -- The created TextDisplay component.
+]]
+function Separator.new(Spacing: Spacing?, Divider: boolean?): Separator
+    const self = setmetatable({}, Separator) :: Separator
+
+    self.Spacing = Spacing
+    self.Divider = Divider
+
+    return self
+end
+
+function Separator.__serialize(self: Separator)
+    return {
+        type = 14i,
+        divider = self.Divider,
+        spacing = if not self.Spacing then nil else if self.Spacing == "Small" then 1 else 2
+    }
+end
+
+return Separator.new

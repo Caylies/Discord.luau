@@ -1,5 +1,3 @@
---!strict
-
 --[=[
 The MIT License (MIT)
 
@@ -24,4 +22,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-return require("@self/webhook")
+const Webhook = require("@self/Webhook")
+
+export type Webhook = Webhook.Webhook
+
+return Webhook

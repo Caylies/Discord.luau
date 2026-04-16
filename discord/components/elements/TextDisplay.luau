@@ -22,35 +22,39 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const ComponentTypes = require("./components")
+--[[
+    TextDisplay class for Discord message components.
 
-type Embed = ComponentTypes.Embed
-
-export type MessageSendInterface = {
-    read Content: string?,
-} 
-
-export type WebhookExecutionInterface = MessageSendInterface & {
-    read Username: string?,
-    read AvatarUrl: string?,
-    read Components: { any }?,
-    read Embeds: { Embed }?,
+    @class TextDisplay
+]]
+const TextDisplay = {
+    _IS_COMPONENT = true,
 }
+TextDisplay.__index = TextDisplay
 
-export type WebhookBody = {
-    read application_id: number?,
-    read avatar: string?,
-    read channel_id: number,
-    read guild_id: number,
-    read id: number,
-    read name: string,
-    read type: number,
-    read token: string,
-    read url: string,
-}
+export type TextDisplay = setmetatable<{
+    Content: string,
+}, typeof(TextDisplay)>
 
-export type WebhookURL = {
-    write with_components: boolean,
-}
+--[[
+    Creates a new TextDisplay component.
 
-return nil
+    @param Content string -- The content of the TextDisplay component.
+    @return TextDisplay -- The created TextDisplay component.
+]]
+function TextDisplay.new(Content: string): TextDisplay
+    const self = setmetatable({}, TextDisplay) :: TextDisplay
+
+    self.Content = Content
+
+    return self
+end
+
+function TextDisplay.__serialize(self: TextDisplay)
+    return {
+        type = 10i,
+        content = self.Content,
+    }
+end
+
+return TextDisplay.new

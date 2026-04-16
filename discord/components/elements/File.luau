@@ -22,35 +22,59 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const ComponentTypes = require("./components")
+--[[
+    File class for Discord message components.
 
-type Embed = ComponentTypes.Embed
+    @class File
+]]
+const File = {
+    _IS_COMPONENT = true,
+}
+File.__index = File
 
-export type MessageSendInterface = {
-    read Content: string?,
-} 
+const UnfurledMediaItem = require("../core/UnfurledMediaItem")
 
-export type WebhookExecutionInterface = MessageSendInterface & {
-    read Username: string?,
-    read AvatarUrl: string?,
-    read Components: { any }?,
-    read Embeds: { Embed }?,
+type UnfurledMediaItem = UnfurledMediaItem.UnfurledMediaItem
+
+type Parameters = {
+    read Url: string,
+    read Name: string?,
+    read Spoiler: boolean?
 }
 
-export type WebhookBody = {
-    read application_id: number?,
-    read avatar: string?,
-    read channel_id: number,
-    read guild_id: number,
-    read id: number,
-    read name: string,
-    read type: number,
-    read token: string,
-    read url: string,
-}
+export type File = setmetatable<{
+    Name: string?,
+    File: UnfurledMediaItem,
+    Spoiler: boolean?,
+}, typeof(File)>
 
-export type WebhookURL = {
-    write with_components: boolean,
-}
+--[[
+    Creates a new File component.
 
-return nil
+    @param url string -- The file's url.
+    @return File -- The created File component.
+]]
+function File.new(Parameters: Parameters): File
+    error("Not implemented yet", 2)
+
+    --[[
+    const self = setmetatable({}, File) :: File
+
+    self.File = UnfurledMediaItem.new(Parameters.Url)
+    self.Name = Parameters.Name
+    self.Spoiler = Parameters.Spoiler
+
+    return self
+    ]]
+end
+
+function File.__serialize(self: File)
+    return {
+        type = 13i,
+        name = self.Name,
+        file = self.File:__serialize(),
+        spoiler = self.Spoiler,
+    }
+end
+
+return File.new

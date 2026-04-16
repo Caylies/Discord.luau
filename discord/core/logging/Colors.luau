@@ -22,35 +22,18 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const ComponentTypes = require("./components")
-
-type Embed = ComponentTypes.Embed
-
-export type MessageSendInterface = {
-    read Content: string?,
-} 
-
-export type WebhookExecutionInterface = MessageSendInterface & {
-    read Username: string?,
-    read AvatarUrl: string?,
-    read Components: { any }?,
-    read Embeds: { Embed }?,
+type Colors = {
+    RESET: string,
+    TYPES: { [string]: string }
 }
 
-export type WebhookBody = {
-    read application_id: number?,
-    read avatar: string?,
-    read channel_id: number,
-    read guild_id: number,
-    read id: number,
-    read name: string,
-    read type: number,
-    read token: string,
-    read url: string,
-}
-
-export type WebhookURL = {
-    write with_components: boolean,
-}
-
-return nil
+return {
+    RESET = "\27[0m",
+    TYPES = {
+        ERROR = "\27[31m",
+        WARNING = "\27[33m",
+        INFO = "\27[32m",
+        CRITICAL = "\27[35m",
+        DEBUG = "\27[90m",
+    }
+} :: Colors
