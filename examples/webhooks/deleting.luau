@@ -7,6 +7,8 @@
 const task = require("@lute/task")
 
 const Discord = require("../../discord")
+Discord.Internal.SetVerbose(true)
+
 const Webhook = Discord.Webhook.FromUrlAsync("ENTER_WEBHOOK_URL_HERE")
 
 task.wait(5)

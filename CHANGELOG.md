@@ -35,6 +35,9 @@ Discord.luau changes will be documented in this file.
     - Added `Container:Add(...)` method for adding components to a container.
   - Added the `TextDisplay` component.
   - Added the `Separator` component.
+- Added a new `Internal` module for configuring Discord.luau.
+  - Added `Internal.Verbose` for verbose logging.
+  - Added `Internal.SetVerbose(...)` to control whether logging will be verbose.
 - Exported types to Discord.luau's source module.
   - Exported the `Color` class type.
   - Exported the `Embed` class type.
@@ -55,11 +58,8 @@ Discord.luau changes will be documented in this file.
 - Exported all types to the `type` module.
 - Added a `Requests` core module for handling Discord API requests and data serialization.
 - Added `Url` class for providing an OOP way of modifying and accessing URLs.
-- Added a `Verbose` property to `Logger` to control whether or not messages logged with `Logger:Debug(...)` will print.
 - Added `Logger:Debug(...)` for verbose logging.
-  - Messages logged with `Logger:Debug(...)` will only appear if the `Verbose` property for that Logger is set to `true`.
-- Added an `env` file that holds global Discord.luau configuration.
-  - Added a `VERBOSE` variable to control debug logging globally.
+  - Messages logged with `Logger:Debug(...)` will only appear if the `Verbose` property in the internal module is set to `true`.
 - Improved the logging module's structure.
 - Improved error handling for `Webhook.FromUrlAsync(...)`, `Webhook:SendAsync(...)`, and `Webhook:DeleteAsync(...)`.
 - `Webhook.FromUrlAsync(...)` now accepts a `Components` parameter for rendering components.
@@ -76,6 +76,7 @@ Discord.luau changes will be documented in this file.
 - `Webhook.WebhookURL` has been changed to `Webhook.Url` for consistency.
 - `Serializer.Serialize(...)` has been moved to the request module in favor of `Requests.Serialize(...)` as the new solution offers far better type checking, automatic JSON serialization, and a more appropriate location.
 - Various example file names have been shortened.
+- Bumped Lute to v1.0.0.
 
 ### Fixed
 

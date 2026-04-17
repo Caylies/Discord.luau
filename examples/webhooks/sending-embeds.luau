@@ -5,6 +5,7 @@
 ]]
 
 const Discord = require("../../discord")
+Discord.Internal.SetVerbose(true)
 
 const Components = Discord.Components
 

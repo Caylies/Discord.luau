@@ -25,6 +25,7 @@ DEALINGS IN THE SOFTWARE.
 const Color = require("@self/color")
 const Components = require("@self/components")
 const Webhook = require("@self/webhook")
+const Internal = require("@self/internal")
 
 export type Color = Color.Color
 export type Embed = Components.Embed
@@ -39,4 +40,5 @@ return {
     Color = Color,
     Components = Components,
     Webhook = Webhook,
+    Internal = Internal,
 }

@@ -25,12 +25,11 @@ DEALINGS IN THE SOFTWARE.
 const Logger = {}
 Logger.__index = Logger
 
-const ENV = require("../../env")
 const Colors = require("./Colors")
+const Internal = require("../../internal")
 
 export type Logger = setmetatable<{
 	read Name: string,
-    Verbose: boolean,
 }, typeof(Logger)>
 
 --[[
@@ -40,7 +39,7 @@ export type Logger = setmetatable<{
     @return Logger -- A new logger with the specified name.
 ]]
 function Logger.new(Name: string): Logger
-	return setmetatable({ Name = Name, Verbose = ENV.VERBOSE }, Logger)
+	return setmetatable({ Name = Name }, Logger)
 end
 
 --[[
@@ -99,7 +98,7 @@ end
     @param Message string -- The message to log.
 ]]
 function Logger.Debug(self: Logger, Message: string): ()
-    if not self.Verbose then
+    if not Internal.Verbose then
         return
     end
 
