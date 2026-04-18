@@ -32,9 +32,9 @@ const Separator = {
 }
 Separator.__index = Separator
 
-const ComponentTypes = require("../../types/components")
+const Types = require("@types")
 
-type Spacing = ComponentTypes.SeparatorSpacing
+type Spacing = Types.SeparatorSpacing
 
 export type Separator = setmetatable<{
     Spacing: Spacing?,

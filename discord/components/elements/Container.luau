@@ -32,8 +32,8 @@ const Container = {
 }
 Container.__index = Container
 
-const Color = require("../../color")
-const Types = require("../../types")
+const Color = require("@color")
+const Types = require("@types")
 
 type Component = Types.Component
 type Color = Color.Color

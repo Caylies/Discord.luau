@@ -22,7 +22,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ]=]
 
-const Types = require("./types/components")
+const Types = require("@types")
 
 export type Embed = Types.Embed
 export type Component = Types.Component

@@ -32,7 +32,7 @@ const File = {
 }
 File.__index = File
 
-const UnfurledMediaItem = require("../core/UnfurledMediaItem")
+const UnfurledMediaItem = require("@core/UnfurledMediaItem")
 
 type UnfurledMediaItem = UnfurledMediaItem.UnfurledMediaItem
 

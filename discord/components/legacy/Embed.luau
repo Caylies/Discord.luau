@@ -30,7 +30,7 @@ DEALINGS IN THE SOFTWARE.
 const Embed = {}
 Embed.__index = Embed
 
-const Color = require("../../color")
+const Color = require("@color")
 
 type Color = Color.Color
 

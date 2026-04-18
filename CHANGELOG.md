@@ -67,6 +67,13 @@ Discord.luau changes will be documented in this file.
 - Added the `IS_COMPONENTS_V2` message flag.
 - Added `.luaurc` for project-wide configuration.
   - Removed all references of `--!strict` in favor or `languageMode: "strict"`
+  - Added `@root` alias to reference the project's root folder.
+  - Added `@core` alias to reference `discord/core`.
+  - Added `@utils` alias to reference `discord/core/utils`.
+  - Added `@types` alias to reference `discord/types`.
+  - Added `@color` alias to reference `discord/color`.
+  - Added `@internal` alias to reference `discord/internal`.
+  - Added various Lute aliases.
 
 ### Changed
 

@@ -1,6 +1,12 @@
 {
     "languageMode": "strict",
     "aliases": {
+        "root": ".",
+        "core": "./discord/core",
+        "utils": "./discord/core/utils",
+        "types": "./discord/types",
+        "color": "./discord/color",
+        "internal": "./discord/internal",
         "std": "./packages/lute/lute/std/libs",
         "lute": "./packages/lute/definitions",
         "commands": "./packages/lute/lute/cli/commands"

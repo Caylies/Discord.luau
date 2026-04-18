@@ -4,7 +4,7 @@
     Connects to a Discord webhook and sends a message with components.
 ]]
 
-const Discord = require("../../discord")
+const Discord = require("@root/discord")
 Discord.Internal.SetVerbose(true)
 
 const Components = Discord.Components

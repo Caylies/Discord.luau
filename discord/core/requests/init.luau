@@ -26,8 +26,8 @@ const Requests = {}
 
 const json = require("@std/json")
 
-const Types = require("../types")
-const Strings = require("./utils/strings")
+const Strings = require("@utils/strings")
+const Types = require("@types")
 
 type Serialize<T> = Types.Serialize<T>
 type Serializable<T = { any }> = Types.Serializable<T>

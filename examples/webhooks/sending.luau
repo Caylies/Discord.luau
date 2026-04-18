@@ -4,7 +4,7 @@
     Connects to a Discord webhook and sends a message.
 ]]
 
-const Discord = require("../../discord")
+const Discord = require("@root/discord")
 Discord.Internal.SetVerbose(true)
 
 const Webhook = Discord.Webhook.FromUrlAsync("ENTER_WEBHOOK_URL_HERE")

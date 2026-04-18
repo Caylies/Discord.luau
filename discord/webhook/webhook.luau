@@ -33,12 +33,12 @@ Webhook.__index = Webhook
 const json = require("@std/json")
 const net = require("@lute/net/client")
 
-const Logging = require("../core/logging")
-const Requests = require("../core/requests")
-const Dictionaries = require("../core/utils/dictionaries")
-const MessageFlags = require("../core/flags/message")
-const Url = require("../core/Url")
-const Types = require("../types")
+const Logging = require("@core/logging")
+const Requests = require("@core/requests")
+const Dictionaries = require("@core/utils/dictionaries")
+const MessageFlags = require("@core/flags/message")
+const Url = require("@core/Url")
+const Types = require("@types")
 
 const Logger = Logging.GetLogger("Discord.Webhook")
 

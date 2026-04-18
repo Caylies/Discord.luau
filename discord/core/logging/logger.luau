@@ -25,8 +25,8 @@ DEALINGS IN THE SOFTWARE.
 const Logger = {}
 Logger.__index = Logger
 
-const Colors = require("./Colors")
-const Internal = require("../../internal")
+const Colors = require("@core/logging/Colors")
+const Internal = require("@internal")
 
 export type Logger = setmetatable<{
 	read Name: string,
